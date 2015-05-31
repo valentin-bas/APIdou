@@ -1,21 +1,24 @@
 package com.example.raveh.apidoubridge;
 
-import android.content.Context;
-
 import com.punchthrough.bean.sdk.Bean;
 import com.punchthrough.bean.sdk.BeanDiscoveryListener;
 import com.punchthrough.bean.sdk.BeanManager;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Raveh on 30/05/2015.
  */
 public class ApidouManager
 {
+    public List<String> discoveredNamesList = new ArrayList<String>();
+
+    private Collection<ApidouListener> _apidous;
+
     private BeanManager _beanManager;
     private ApidouDiscoveryListener _discoveryListener;
-    private Collection<ApidouListener> _apidous;
     private MainActivity _context;
 
     public void init(MainActivity context)
@@ -28,7 +31,9 @@ public class ApidouManager
 
     public void startDiscovery()
     {
+        _context.debugMessage("Start discovery");
         _beanManager.startDiscovery(_discoveryListener);
+        discoveredNamesList.add("THIS IS A TEST");
     }
 
     public void onBeanDiscovered(Bean bean, int rssi)
@@ -39,6 +44,7 @@ public class ApidouManager
         apidouListener.init(this, _context, bean);
         _apidous.add(apidouListener);
         bean.connect(_context, apidouListener);
+        discoveredNamesList.add(bean.getDevice().getName());
     }
 
     public void onBeanDiscoveryComplete()

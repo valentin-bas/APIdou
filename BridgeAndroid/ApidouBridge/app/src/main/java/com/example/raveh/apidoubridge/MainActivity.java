@@ -1,49 +1,57 @@
 package com.example.raveh.apidoubridge;
 
-import android.content.Context;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.punchthrough.bean.sdk.Bean;
-import com.punchthrough.bean.sdk.BeanDiscoveryListener;
-import com.punchthrough.bean.sdk.BeanListener;
-import com.punchthrough.bean.sdk.BeanManager;
-import com.punchthrough.bean.sdk.message.Acceleration;
-import com.punchthrough.bean.sdk.message.BeanError;
-import com.punchthrough.bean.sdk.message.Callback;
-import com.punchthrough.bean.sdk.message.ScratchBank;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends FragmentActivity
 {
 
     private ApidouManager _manager;
-    private TextView _textView;
+    private TextView _debugTextView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        _debugTextView = (TextView)findViewById(R.id.debugTextView);
+        _debugTextView.setText("");
         _manager = new ApidouManager();
         _manager.init(this);
-        _manager.startDiscovery();
-        _textView = (TextView)findViewById(R.id.textview);
+
+        Button searchButton = (Button)findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(_searchClickListener);
+
+        ListView itemList = ((ListView)findViewById(R.id.apidouListView));
+        itemList.setAdapter(new ApidouItemArrayAdapter(this, _manager.discoveredNamesList));
+        itemList.setOnItemClickListener(_itemClickListener);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -51,6 +59,7 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            debugMessage("settings clicked");
             return true;
         }
 
@@ -59,6 +68,34 @@ public class MainActivity extends ActionBarActivity
 
     public void debugMessage(String message)
     {
-        _textView.append(message + "\n");
+        _debugTextView.setText(message + "\n");
     }
+
+
+    //---------------Click listeners----------------------------------------------------------------
+
+    private View.OnClickListener _searchClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v)
+        {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            boolean hasBluetooth = bluetoothAdapter != null;
+            if (hasBluetooth && bluetoothAdapter.isEnabled() == true)
+                _manager.startDiscovery();
+            else if (hasBluetooth)
+                Toast.makeText(getApplicationContext(), "Enable your bluetooth first", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getApplicationContext(), "Can't find any bluetooth adapter", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private AdapterView.OnItemClickListener _itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            debugMessage("click on item " + position);
+            Intent intent = new Intent(MainActivity.this, ApidouItemSettingsActivity.class);
+            startActivity(intent);
+        }
+    };
+
 }

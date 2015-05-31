@@ -1,7 +1,5 @@
 package com.example.raveh.apidoubridge;
 
-import android.widget.TextView;
-
 import com.punchthrough.bean.sdk.Bean;
 import com.punchthrough.bean.sdk.BeanListener;
 import com.punchthrough.bean.sdk.message.Acceleration;
