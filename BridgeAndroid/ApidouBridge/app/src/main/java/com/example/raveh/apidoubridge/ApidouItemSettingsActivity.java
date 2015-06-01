@@ -1,17 +1,24 @@
 package com.example.raveh.apidoubridge;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 public class ApidouItemSettingsActivity extends FragmentActivity {
+
+    private String _apidouName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apidou_item_settings);
+        TextView title = (TextView)findViewById(R.id.titleNameTextView);
+        _apidouName = getIntent().getStringExtra(MainActivity.ITEM_NAME_MESSAGE);
+        title.setText(_apidouName);
     }
 
     @Override

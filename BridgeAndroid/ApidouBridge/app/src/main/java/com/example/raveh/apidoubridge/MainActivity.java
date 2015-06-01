@@ -20,6 +20,8 @@ import java.util.List;
 public class MainActivity extends FragmentActivity
 {
 
+    public final static String ITEM_NAME_MESSAGE = "com.example.raveh.apidoubridge.ITEMNAMEMESSAGE";
+
     private ApidouManager _manager;
     private TextView _debugTextView;
 
@@ -37,6 +39,7 @@ public class MainActivity extends FragmentActivity
         searchButton.setOnClickListener(_searchClickListener);
 
         ListView itemList = ((ListView)findViewById(R.id.apidouListView));
+        _manager.discoveredNamesList.add("test");
         itemList.setAdapter(new ApidouItemArrayAdapter(this, _manager.discoveredNamesList));
         itemList.setOnItemClickListener(_itemClickListener);
     }
@@ -94,6 +97,7 @@ public class MainActivity extends FragmentActivity
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             debugMessage("click on item " + position);
             Intent intent = new Intent(MainActivity.this, ApidouItemSettingsActivity.class);
+            intent.putExtra(ITEM_NAME_MESSAGE, _manager.discoveredNamesList.get(position));
             startActivity(intent);
         }
     };
