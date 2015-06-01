@@ -14,48 +14,56 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
-public class ApidouItemSettingsActivity extends FragmentActivity {
+public class ApidouItemSettingsActivity extends FragmentActivity
+{
 
-    private String _apidouName;
+    private ApidouListener _apidouInUse;
     private ApidouManager _manager;
-    private List<String> _redirectionTargets = new ArrayList<String>();
+    private List<ApidouListener> _redirectionTargets = new ArrayList<ApidouListener>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apidou_item_settings);
         TextView title = (TextView)findViewById(R.id.titleNameTextView);
-        _apidouName = getIntent().getStringExtra(MainActivity.ITEM_NAME_MESSAGE);
-        title.setText(_apidouName);
         _manager = ApidouManager.getInstance();
-        _redirectionTargets.add("none");
-        _redirectionTargets.addAll(_manager.discoveredNamesList);
-        _redirectionTargets.remove(_apidouName);
+        UUID uuid = (UUID)getIntent().getSerializableExtra(MainActivity.ITEM_NAME_MESSAGE);
+        _apidouInUse = _manager.getApidouWithUUID(uuid);
+        title.setText(_apidouInUse.getName());
+        ApidouListener voidApidou = new ApidouListener();
+        voidApidou.setOverrideName("");
+        _redirectionTargets.add(voidApidou);
+        _redirectionTargets.addAll(_manager.getApidous());
+        _redirectionTargets.remove(_apidouInUse);
+        ApidouItemArrayAdapter adapter = new ApidouItemArrayAdapter(this, android.R.layout.simple_spinner_item, _redirectionTargets, ApidouItemArrayAdapter.ItemType.Spinner);
         Spinner spinner = (Spinner)findViewById(R.id.eventsRedirectionSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, _redirectionTargets);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(_redirectionItemSelected);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_apidou_item_settings, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
@@ -67,18 +75,17 @@ public class ApidouItemSettingsActivity extends FragmentActivity {
     private AdapterView.OnItemSelectedListener _redirectionItemSelected = new AdapterView.OnItemSelectedListener()
     {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            boolean sucess;
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+        {
             if (position != 0)
-                sucess = _manager.redirectEventsToApidou(_apidouName, _redirectionTargets.get(position));
+                _apidouInUse.setRedirectionListener(_redirectionTargets.get(position));
             else
-                sucess = _manager.clearRedirection(_apidouName);
-            if (!sucess)
-                Toast.makeText(getApplicationContext(), "Unable to redirect : Bad name", Toast.LENGTH_SHORT).show();
+                _apidouInUse.setRedirectionListener(null);
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> parent) {
+        public void onNothingSelected(AdapterView<?> parent)
+        {
 
         }
     };

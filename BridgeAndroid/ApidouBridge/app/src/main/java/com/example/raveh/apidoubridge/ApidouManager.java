@@ -7,14 +7,13 @@ import com.punchthrough.bean.sdk.BeanManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Raveh on 30/05/2015.
  */
 public class ApidouManager
 {
-    public List<String> discoveredNamesList = new ArrayList<String>();
-
     private List<ApidouListener> _apidous = new ArrayList<ApidouListener>();
 
     private BeanManager _beanManager;
@@ -34,6 +33,19 @@ public class ApidouManager
         return _instance;
     }
 
+    //getters setters
+
+    public List<ApidouListener> getApidous() { return _apidous; }
+    public ApidouListener getApidouWithUUID(UUID uuid)
+    {
+        for (int i = 0; i < _apidous.size(); i++)
+        {
+            if (_apidous.get(i).getUUID().equals(uuid))
+                return _apidous.get(i);
+        }
+        return null;
+    }
+
     //public functions
 
     public void init(MainActivity context)
@@ -44,32 +56,21 @@ public class ApidouManager
         _context = context;
     }
 
+    public void debugPopulate(int count)
+    {
+        //debug
+        for (int i = 0; i < count; ++i)
+        {
+            ApidouListener debugApidou = new ApidouListener();
+            debugApidou.setOverrideName("DebugApidou" + i);
+            _apidous.add(debugApidou);
+        }
+    }
+
     public void startDiscovery()
     {
         _context.debugMessage("Start discovery");
         _beanManager.startDiscovery(_discoveryListener);
-        discoveredNamesList.add("THIS IS A TEST");
-    }
-
-    public boolean redirectEventsToApidou(String srcDou, String dstDou)
-    {
-        if (srcDou == dstDou)
-            return false;
-        ApidouListener src = _findListener(srcDou);
-        ApidouListener dst = _findListener(dstDou);
-        if (src == null || dst == null)
-            return false;
-        src.setRedirectionListener(dst);
-        return true;
-    }
-
-    public boolean clearRedirection(String srcDou)
-    {
-        ApidouListener src = _findListener(srcDou);
-        if (src == null)
-            return false;
-        src.setRedirectionListener(null);
-        return true;
     }
 
     //events
@@ -82,7 +83,6 @@ public class ApidouManager
         apidouListener.init(this, _context, bean);
         _apidous.add(apidouListener);
         bean.connect(_context, apidouListener);
-        discoveredNamesList.add(bean.getDevice().getName());
     }
 
     public void onBeanDiscoveryComplete()
@@ -108,11 +108,5 @@ public class ApidouManager
 
     // private functions
 
-    private ApidouListener _findListener(String name)
-    {
-        for (int i = 0; i < _apidous.size(); i++)
-            if (_apidous.get(i).getName() == name)
-                return _apidous.get(i);
-        return null;
-    }
+
 }

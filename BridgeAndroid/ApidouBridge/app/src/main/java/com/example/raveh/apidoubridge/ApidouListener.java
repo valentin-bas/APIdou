@@ -7,6 +7,8 @@ import com.punchthrough.bean.sdk.message.BeanError;
 import com.punchthrough.bean.sdk.message.Callback;
 import com.punchthrough.bean.sdk.message.ScratchBank;
 
+import java.util.UUID;
+
 /**
  * Created by Raveh on 31/05/2015.
  */
@@ -16,14 +18,23 @@ public class ApidouListener implements BeanListener
     private Bean _bean;
     private ApidouManager _manager;
     private ApidouListener _eventsRedirectionListener;
+    private String _nameOverride;
+    private UUID _uuid;
+    //ctor dtor
 
-    private Callback<Acceleration> _accelCallback = new Callback<Acceleration>() {
-        @Override
-        public void onResult(Acceleration acceleration) {
-            _context.debugMessage(_bean.getDevice().getName() +  " / Accel : " + acceleration.toString());
-            _bean.readAcceleration(_accelCallback);
-        }
-    };
+    ApidouListener()
+    {
+        _nameOverride = null;
+        _uuid = UUID.randomUUID();
+    }
+
+    //getters setters
+
+    public Bean getBean() { return _bean; }
+    public String getName() { return _nameOverride == null ? _bean.getDevice().getName() : _nameOverride; }
+    public UUID getUUID() { return _uuid; }
+    public void setRedirectionListener(ApidouListener listner) { _eventsRedirectionListener = listner; }
+    public void setOverrideName(String name) { _nameOverride = name; }
 
     //public functions
 
@@ -34,11 +45,17 @@ public class ApidouListener implements BeanListener
         _bean = bean;
     }
 
-    //getter
+    //callbacks
 
-    public Bean getBean() { return _bean; }
-    public String getName() { return _bean.getDevice().getName(); }
-    public void setRedirectionListener(ApidouListener listner) { _eventsRedirectionListener = listner; }
+    private Callback<Acceleration> _accelCallback = new Callback<Acceleration>()
+    {
+        @Override
+        public void onResult(Acceleration acceleration)
+        {
+            _context.debugMessage(_bean.getDevice().getName() +  " / Accel : " + acceleration.toString());
+            _bean.readAcceleration(_accelCallback);
+        }
+    };
 
     //events
 

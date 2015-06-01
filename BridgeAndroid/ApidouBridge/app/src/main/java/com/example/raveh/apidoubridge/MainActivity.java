@@ -20,6 +20,8 @@ import java.util.List;
 public class MainActivity extends FragmentActivity
 {
 
+    /*DEBUG*/ private  static int FAKE_APIDOU_COUNT = 5;
+
     public final static String ITEM_NAME_MESSAGE = "com.example.raveh.apidoubridge.ITEMNAMEMESSAGE";
 
     private ApidouManager _manager;
@@ -39,8 +41,7 @@ public class MainActivity extends FragmentActivity
         searchButton.setOnClickListener(_searchClickListener);
 
         ListView itemList = ((ListView)findViewById(R.id.apidouListView));
-        _manager.discoveredNamesList.add("Test from MainActivity::onCreate");
-        itemList.setAdapter(new ApidouItemArrayAdapter(this, _manager.discoveredNamesList));
+        itemList.setAdapter(new ApidouItemArrayAdapter(this, R.layout.apidou_list_layout, _manager.getApidous(), ApidouItemArrayAdapter.ItemType.ListView));
         itemList.setOnItemClickListener(_itemClickListener);
     }
 
@@ -84,7 +85,11 @@ public class MainActivity extends FragmentActivity
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             boolean hasBluetooth = bluetoothAdapter != null;
             if (hasBluetooth && bluetoothAdapter.isEnabled() == true)
+            {
+
                 _manager.startDiscovery();
+                /*DEBUG*/_manager.debugPopulate(FAKE_APIDOU_COUNT);
+            }
             else if (hasBluetooth)
                 Toast.makeText(getApplicationContext(), "Enable your bluetooth first", Toast.LENGTH_SHORT).show();
             else
@@ -97,7 +102,7 @@ public class MainActivity extends FragmentActivity
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             debugMessage("click on item " + position);
             Intent intent = new Intent(MainActivity.this, ApidouItemSettingsActivity.class);
-            intent.putExtra(ITEM_NAME_MESSAGE, _manager.discoveredNamesList.get(position));
+            intent.putExtra(ITEM_NAME_MESSAGE, _manager.getApidous().get(position).getUUID());
             startActivity(intent);
         }
     };
