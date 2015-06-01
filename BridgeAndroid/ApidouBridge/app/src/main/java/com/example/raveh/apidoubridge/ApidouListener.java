@@ -78,6 +78,8 @@ public class ApidouListener implements BeanListener
     public void onSerialMessageReceived(byte[] data)
     {
         _context.debugMessage("Bean message received !" + new String(data));
+        if (_eventsRedirectionListener != null)
+            _eventsRedirectionListener.getBean().sendSerialMessage(data);
     }
 
     public void onScratchValueChanged(ScratchBank bank, byte[] value)
