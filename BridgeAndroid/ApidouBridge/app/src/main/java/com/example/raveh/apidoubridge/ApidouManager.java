@@ -15,7 +15,7 @@ public class ApidouManager
 {
     public List<String> discoveredNamesList = new ArrayList<String>();
 
-    private Collection<ApidouListener> _apidous;
+    private Collection<ApidouListener> _apidous = new ArrayList<ApidouListener>();
 
     private BeanManager _beanManager;
     private ApidouDiscoveryListener _discoveryListener;
