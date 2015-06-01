@@ -15,6 +15,7 @@ public class ApidouListener implements BeanListener
     private MainActivity _context;
     private Bean _bean;
     private ApidouManager _manager;
+    private ApidouListener _eventsRedirectionListener;
 
     private Callback<Acceleration> _accelCallback = new Callback<Acceleration>() {
         @Override
@@ -24,12 +25,22 @@ public class ApidouListener implements BeanListener
         }
     };
 
+    //public functions
+
     public void init(ApidouManager manager, MainActivity context, Bean bean)
     {
         _manager = manager;
         _context = context;
         _bean = bean;
     }
+
+    //getter
+
+    public Bean getBean() { return _bean; }
+    public String getName() { return _bean.getDevice().getName(); }
+    public void setRedirectionListener(ApidouListener listner) { _eventsRedirectionListener = listner; }
+
+    //events
 
     public void onConnected()
     {

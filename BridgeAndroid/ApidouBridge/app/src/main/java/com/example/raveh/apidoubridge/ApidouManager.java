@@ -15,11 +15,26 @@ public class ApidouManager
 {
     public List<String> discoveredNamesList = new ArrayList<String>();
 
-    private Collection<ApidouListener> _apidous = new ArrayList<ApidouListener>();
+    private List<ApidouListener> _apidous = new ArrayList<ApidouListener>();
 
     private BeanManager _beanManager;
     private ApidouDiscoveryListener _discoveryListener;
     private MainActivity _context;
+
+    private static ApidouManager _instance;
+
+    private ApidouManager() { }
+
+    public synchronized static ApidouManager getInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = new ApidouManager();
+        }
+        return _instance;
+    }
+
+    //public functions
 
     public void init(MainActivity context)
     {
@@ -35,6 +50,29 @@ public class ApidouManager
         _beanManager.startDiscovery(_discoveryListener);
         discoveredNamesList.add("THIS IS A TEST");
     }
+
+    public boolean redirectEventsToApidou(String srcDou, String dstDou)
+    {
+        if (srcDou == dstDou)
+            return false;
+        ApidouListener src = _findListener(srcDou);
+        ApidouListener dst = _findListener(dstDou);
+        if (src == null || dst == null)
+            return false;
+        src.setRedirectionListener(dst);
+        return true;
+    }
+
+    public boolean clearRedirection(String srcDou)
+    {
+        ApidouListener src = _findListener(srcDou);
+        if (src == null)
+            return false;
+        src.setRedirectionListener(null);
+        return true;
+    }
+
+    //events
 
     public void onBeanDiscovered(Bean bean, int rssi)
     {
@@ -52,6 +90,8 @@ public class ApidouManager
         _context.debugMessage("Discovery complete");
     }
 
+    //BeanDiscoveryListener
+
     private class ApidouDiscoveryListener implements BeanDiscoveryListener
     {
         ApidouManager _manager;
@@ -64,5 +104,15 @@ public class ApidouManager
         public void onDiscoveryComplete() {
             _manager.onBeanDiscoveryComplete();
         }
+    }
+
+    // private functions
+
+    private ApidouListener _findListener(String name)
+    {
+        for (int i = 0; i < _apidous.size(); i++)
+            if (_apidous.get(i).getName() == name)
+                return _apidous.get(i);
+        return null;
     }
 }

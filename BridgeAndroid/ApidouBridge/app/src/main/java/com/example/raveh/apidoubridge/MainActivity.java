@@ -32,14 +32,14 @@ public class MainActivity extends FragmentActivity
         setContentView(R.layout.activity_main);
         _debugTextView = (TextView)findViewById(R.id.debugTextView);
         _debugTextView.setText("");
-        _manager = new ApidouManager();
+        _manager = ApidouManager.getInstance();
         _manager.init(this);
 
         Button searchButton = (Button)findViewById(R.id.searchButton);
         searchButton.setOnClickListener(_searchClickListener);
 
         ListView itemList = ((ListView)findViewById(R.id.apidouListView));
-        _manager.discoveredNamesList.add("test");
+        _manager.discoveredNamesList.add("Test from MainActivity::onCreate");
         itemList.setAdapter(new ApidouItemArrayAdapter(this, _manager.discoveredNamesList));
         itemList.setOnItemClickListener(_itemClickListener);
     }
