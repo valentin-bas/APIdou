@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ApidouItemSettingsActivity"
+            android:name=".ItemSettingsActivity"
             android:label="@string/title_activity_apidou_item_settings" >
         </activity>
     </application>

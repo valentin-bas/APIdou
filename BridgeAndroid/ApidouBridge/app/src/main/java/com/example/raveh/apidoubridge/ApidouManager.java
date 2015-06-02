@@ -1,5 +1,8 @@
 package com.example.raveh.apidoubridge;
 
+import android.content.Context;
+import android.hardware.SensorManager;
+
 import com.punchthrough.bean.sdk.Bean;
 import com.punchthrough.bean.sdk.BeanDiscoveryListener;
 import com.punchthrough.bean.sdk.BeanManager;
@@ -56,17 +59,6 @@ public class ApidouManager
         _context = context;
     }
 
-    public void debugPopulate(int count)
-    {
-        //debug
-        for (int i = 0; i < count; ++i)
-        {
-            ApidouListener debugApidou = new ApidouListener();
-            debugApidou.setOverrideName("DebugApidou" + i);
-            _apidous.add(debugApidou);
-        }
-    }
-
     public void startDiscovery()
     {
         _context.debugMessage("Start discovery");
@@ -108,5 +100,19 @@ public class ApidouManager
 
     // private functions
 
+    // DEBUG functions
+    private ArrayList<DebugDeviceAccelerometer> _debugAccels = new ArrayList<>();
+
+    public void DEBUGPOPULATE(int count)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            ApidouListener debugApidou = new ApidouListener();
+            debugApidou.init(this, _context, null);
+            debugApidou.setOverrideName("DebugApidou" + i);
+            _debugAccels.add(new DebugDeviceAccelerometer(debugApidou, (SensorManager)_context.getSystemService(Context.SENSOR_SERVICE)));
+            _apidous.add(debugApidou);
+        }
+    }
 
 }

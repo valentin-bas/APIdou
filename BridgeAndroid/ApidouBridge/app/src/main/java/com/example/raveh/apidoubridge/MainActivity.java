@@ -1,26 +1,24 @@
 package com.example.raveh.apidoubridge;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends FragmentActivity
 {
 
-    /*DEBUG*/ private  static int FAKE_APIDOU_COUNT = 5;
+    /*DEBUG*/ private  static int FAKE_APIDOU_COUNT = 1;
 
     public final static String ITEM_NAME_MESSAGE = "com.example.raveh.apidoubridge.ITEMNAMEMESSAGE";
 
@@ -32,6 +30,7 @@ public class MainActivity extends FragmentActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         _debugTextView = (TextView)findViewById(R.id.debugTextView);
         _debugTextView.setText("");
         _manager = ApidouManager.getInstance();
@@ -41,7 +40,7 @@ public class MainActivity extends FragmentActivity
         searchButton.setOnClickListener(_searchClickListener);
 
         ListView itemList = ((ListView)findViewById(R.id.apidouListView));
-        itemList.setAdapter(new ApidouItemArrayAdapter(this, R.layout.apidou_list_layout, _manager.getApidous(), ApidouItemArrayAdapter.ItemType.ListView));
+        itemList.setAdapter(new ItemArrayAdapter(this, R.layout.apidou_list_layout, _manager.getApidous(), ItemArrayAdapter.ItemType.ListView));
         itemList.setOnItemClickListener(_itemClickListener);
     }
 
@@ -86,9 +85,8 @@ public class MainActivity extends FragmentActivity
             boolean hasBluetooth = bluetoothAdapter != null;
             if (hasBluetooth && bluetoothAdapter.isEnabled() == true)
             {
-
                 _manager.startDiscovery();
-                /*DEBUG*/_manager.debugPopulate(FAKE_APIDOU_COUNT);
+                /*DEBUG*/_manager.DEBUGPOPULATE(FAKE_APIDOU_COUNT);
             }
             else if (hasBluetooth)
                 Toast.makeText(getApplicationContext(), "Enable your bluetooth first", Toast.LENGTH_SHORT).show();
@@ -101,7 +99,7 @@ public class MainActivity extends FragmentActivity
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             debugMessage("click on item " + position);
-            Intent intent = new Intent(MainActivity.this, ApidouItemSettingsActivity.class);
+            Intent intent = new Intent(MainActivity.this, ItemSettingsActivity.class);
             intent.putExtra(ITEM_NAME_MESSAGE, _manager.getApidous().get(position).getUUID());
             startActivity(intent);
         }

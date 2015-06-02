@@ -20,12 +20,14 @@ public class ApidouListener implements BeanListener
     private ApidouListener _eventsRedirectionListener;
     private String _nameOverride;
     private UUID _uuid;
+    private ApidouGestureDetector _gestureDetector;
     //ctor dtor
 
     ApidouListener()
     {
         _nameOverride = null;
         _uuid = UUID.randomUUID();
+        _gestureDetector = new ApidouGestureDetector();
     }
 
     //getters setters
@@ -45,17 +47,13 @@ public class ApidouListener implements BeanListener
         _bean = bean;
     }
 
-    //callbacks
+    //callbacks events
 
-    private Callback<Acceleration> _accelCallback = new Callback<Acceleration>()
+    public void onAccelerationData(Acceleration acceleration)
     {
-        @Override
-        public void onResult(Acceleration acceleration)
-        {
-            _context.debugMessage(_bean.getDevice().getName() +  " / Accel : " + acceleration.toString());
-            _bean.readAcceleration(_accelCallback);
-        }
-    };
+        _context.debugMessage(getName() +  " / Accel : " + acceleration.toString());
+        _gestureDetector.addAccel(acceleration);
+    }
 
     //events
 
@@ -91,4 +89,15 @@ public class ApidouListener implements BeanListener
     {
         _context.debugMessage("Bean error !");
     }
+
+    //callbacks
+
+    public Callback<Acceleration> _accelCallback = new Callback<Acceleration>() {
+        @Override
+        public void onResult(Acceleration acceleration)
+        {
+            onAccelerationData(acceleration);
+            _bean.readAcceleration(_accelCallback);
+        }
+    };
 }

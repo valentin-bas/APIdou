@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Raveh on 31/05/2015.
  */
-public class ApidouItemArrayAdapter extends ArrayAdapter<ApidouListener>
+public class ItemArrayAdapter extends ArrayAdapter<ApidouListener>
 {
     private final Context context;
     private final List<ApidouListener> values;
@@ -26,7 +26,7 @@ public class ApidouItemArrayAdapter extends ArrayAdapter<ApidouListener>
         Spinner,
     }
 
-    public ApidouItemArrayAdapter(Context context, int layout, List<ApidouListener> values, ItemType itemType)
+    public ItemArrayAdapter(Context context, int layout, List<ApidouListener> values, ItemType itemType)
     {
         super(context, layout, values);
         this.context = context;

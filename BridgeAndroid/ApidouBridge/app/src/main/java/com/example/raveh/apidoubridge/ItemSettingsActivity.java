@@ -1,23 +1,20 @@
 package com.example.raveh.apidoubridge;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
-public class ApidouItemSettingsActivity extends FragmentActivity
+public class ItemSettingsActivity extends FragmentActivity
 {
 
     private ApidouListener _apidouInUse;
@@ -39,7 +36,7 @@ public class ApidouItemSettingsActivity extends FragmentActivity
         _redirectionTargets.add(voidApidou);
         _redirectionTargets.addAll(_manager.getApidous());
         _redirectionTargets.remove(_apidouInUse);
-        ApidouItemArrayAdapter adapter = new ApidouItemArrayAdapter(this, android.R.layout.simple_spinner_item, _redirectionTargets, ApidouItemArrayAdapter.ItemType.Spinner);
+        ItemArrayAdapter adapter = new ItemArrayAdapter(this, android.R.layout.simple_spinner_item, _redirectionTargets, ItemArrayAdapter.ItemType.Spinner);
         Spinner spinner = (Spinner)findViewById(R.id.eventsRedirectionSpinner);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(_redirectionItemSelected);
