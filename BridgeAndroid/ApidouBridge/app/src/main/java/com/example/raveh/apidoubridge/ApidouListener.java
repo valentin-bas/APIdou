@@ -6,6 +6,7 @@ import com.punchthrough.bean.sdk.message.Acceleration;
 import com.punchthrough.bean.sdk.message.BeanError;
 import com.punchthrough.bean.sdk.message.Callback;
 import com.punchthrough.bean.sdk.message.ScratchBank;
+import com.punchthrough.bean.sdk.message.ScratchData;
 
 import java.util.UUID;
 
@@ -49,6 +50,7 @@ public class ApidouListener implements BeanListener
 
     //callbacks events
 
+
     public void onAccelerationData(Acceleration acceleration)
     {
         _context.debugMessage(getName() +  " / Accel : " + acceleration.toString());
@@ -75,14 +77,23 @@ public class ApidouListener implements BeanListener
 
     public void onSerialMessageReceived(byte[] data)
     {
-        _context.debugMessage("Bean message received !" + new String(data));
-        if (_eventsRedirectionListener != null)
-            _eventsRedirectionListener.getBean().sendSerialMessage(data);
+        String inc_message = new String(data);
+        int val = Integer.parseInt(inc_message);
+
+        if (!inc_message.isEmpty()) {
+            _context.serialMessage(inc_message, false);
+            if (val > 750) {
+                _context.serialMessage(" => Higher than threshold (750)", true);
+                _bean.sendSerialMessage("Do something"); // The LED will turn on whatever message it receive
+            }
+            if (_eventsRedirectionListener != null)
+                _eventsRedirectionListener.getBean().sendSerialMessage(data);
+        }
     }
 
     public void onScratchValueChanged(ScratchBank bank, byte[] value)
     {
-        _context.debugMessage("Bean scratch value changed !" + new String(value));
+        _context.debugMessage("Bean scratch value changed !");
     }
 
     public void onError(BeanError error)
