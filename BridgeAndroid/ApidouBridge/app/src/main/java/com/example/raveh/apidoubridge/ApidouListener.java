@@ -36,7 +36,7 @@ public class ApidouListener implements BeanListener
     public Bean getBean() { return _bean; }
     public String getName() { return _nameOverride == null ? _bean.getDevice().getName() : _nameOverride; }
     public UUID getUUID() { return _uuid; }
-    public void setRedirectionListener(ApidouListener listner) { _eventsRedirectionListener = listner; }
+    public void setRedirectionListener(ApidouListener listener) { _eventsRedirectionListener = listener; }
     public void setOverrideName(String name) { _nameOverride = name; }
 
     //public functions
@@ -82,12 +82,11 @@ public class ApidouListener implements BeanListener
 
         if (!inc_message.isEmpty()) {
             _context.serialMessage(inc_message, false);
-            if (val > 750) {
+            if (val > 750 && _eventsRedirectionListener != null)
+            {
                 _context.serialMessage(" => Higher than threshold (750)", true);
-                _bean.sendSerialMessage("Do something"); // The LED will turn on whatever message it receive
-            }
-            if (_eventsRedirectionListener != null)
                 _eventsRedirectionListener.getBean().sendSerialMessage(data);
+            }
         }
     }
 
