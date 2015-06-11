@@ -6,6 +6,7 @@ import com.punchthrough.bean.sdk.message.Acceleration;
 import com.punchthrough.bean.sdk.message.BeanError;
 import com.punchthrough.bean.sdk.message.Callback;
 import com.punchthrough.bean.sdk.message.ScratchBank;
+import com.punchthrough.bean.sdk.message.ScratchData;
 
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class ApidouListener implements BeanListener
     public Bean getBean() { return _bean; }
     public String getName() { return _nameOverride == null ? _bean.getDevice().getName() : _nameOverride; }
     public UUID getUUID() { return _uuid; }
-    public void setRedirectionListener(ApidouListener listner) { _eventsRedirectionListener = listner; }
+    public void setRedirectionListener(ApidouListener listener) { _eventsRedirectionListener = listener; }
     public void setOverrideName(String name) { _nameOverride = name; }
 
     //public functions
@@ -48,6 +49,7 @@ public class ApidouListener implements BeanListener
     }
 
     //callbacks events
+
 
     public void onAccelerationData(Acceleration acceleration)
     {
@@ -75,14 +77,22 @@ public class ApidouListener implements BeanListener
 
     public void onSerialMessageReceived(byte[] data)
     {
-        _context.debugMessage("Bean message received !" + new String(data));
-        if (_eventsRedirectionListener != null)
-            _eventsRedirectionListener.getBean().sendSerialMessage(data);
+        String inc_message = new String(data);
+        int val = Integer.parseInt(inc_message);
+
+        if (!inc_message.isEmpty()) {
+            _context.serialMessage(inc_message, false);
+            if (val > 750 && _eventsRedirectionListener != null)
+            {
+                _context.serialMessage(" => Higher than threshold (750)", true);
+                _eventsRedirectionListener.getBean().sendSerialMessage(data);
+            }
+        }
     }
 
     public void onScratchValueChanged(ScratchBank bank, byte[] value)
     {
-        _context.debugMessage("Bean scratch value changed !" + new String(value));
+        _context.debugMessage("Bean scratch value changed !");
     }
 
     public void onError(BeanError error)

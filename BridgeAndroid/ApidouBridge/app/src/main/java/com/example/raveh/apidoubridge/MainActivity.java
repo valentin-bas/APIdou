@@ -18,12 +18,13 @@ import android.widget.Toast;
 public class MainActivity extends FragmentActivity
 {
 
-    /*DEBUG*/ private  static int FAKE_APIDOU_COUNT = 1;
+    /*DEBUG*/ private  static int FAKE_APIDOU_COUNT = 0;
 
     public final static String ITEM_NAME_MESSAGE = "com.example.raveh.apidoubridge.ITEMNAMEMESSAGE";
 
     private ApidouManager _manager;
     private TextView _debugTextView;
+    private TextView _serialTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -33,6 +34,8 @@ public class MainActivity extends FragmentActivity
 
         _debugTextView = (TextView)findViewById(R.id.debugTextView);
         _debugTextView.setText("");
+        _serialTextView = (TextView)findViewById(R.id.serialTextView);
+        _serialTextView.setText("Serial messages will be printed here");
         _manager = ApidouManager.getInstance();
         _manager.init(this);
 
@@ -72,6 +75,16 @@ public class MainActivity extends FragmentActivity
     public void debugMessage(String message)
     {
         _debugTextView.setText(message + "\n");
+    }
+
+    public void serialMessage(String message, boolean append)
+    {
+        if (append){
+            _serialTextView.append(message);
+        }
+        else {
+            _serialTextView.setText(message);
+        }
     }
 
 

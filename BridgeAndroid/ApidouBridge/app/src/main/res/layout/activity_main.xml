@@ -7,7 +7,7 @@
 
     <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:id="@+id/debugTextView"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="101dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
@@ -23,8 +23,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/apidouListView"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="false"
         android:layout_below="@+id/searchButton"
         android:layout_above="@+id/debugTextView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/serialTextView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="31dp" />
 
 </RelativeLayout>
