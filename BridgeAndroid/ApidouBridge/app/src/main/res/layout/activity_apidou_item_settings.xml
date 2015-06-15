@@ -32,39 +32,4 @@
         android:layout_alignTop="@+id/textView"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textView" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/connectIpText"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignEnd="@+id/textView2" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Network redirection IP :"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/eventsRedirectionSpinner"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connect"
-        android:id="@+id/connectButton"
-        android:layout_below="@+id/connectIpText"
-        android:layout_alignParentLeft="true" />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/connectCheckBox"
-        android:layout_alignBottom="@+id/connectButton"
-        android:layout_alignEnd="@+id/connectIpText"
-        android:clickable="false" />
 </RelativeLayout>

@@ -6,9 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,9 +40,6 @@ public class ItemSettingsActivity extends FragmentActivity
         Spinner spinner = (Spinner)findViewById(R.id.eventsRedirectionSpinner);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(_redirectionItemSelected);
-
-        Button connecthButton = (Button)findViewById(R.id.connectButton);
-        connecthButton.setOnClickListener(_connectClickListener);
     }
 
     @Override
@@ -90,18 +84,6 @@ public class ItemSettingsActivity extends FragmentActivity
         public void onNothingSelected(AdapterView<?> parent)
         {
 
-        }
-    };
-
-    private View.OnClickListener _connectClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //Button connecthButton = (Button)findViewById(R.id.connectButton);
-            EditText ipEdit = (EditText)findViewById(R.id.connectIpText);
-            CheckBox checkBox = (CheckBox)findViewById(R.id.connectCheckBox);
-            String ip = ipEdit.getText().toString();
-            //connecthButton.setText(text);
-            new TcpConnectTask(ip, checkBox).execute();
         }
     };
 }
